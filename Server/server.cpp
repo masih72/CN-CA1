@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "server.h"
 
 using namespace std;
@@ -6,7 +7,7 @@ using namespace std;
 Server::Server(int port_num)
 {
 	this->port_num = port_num;
-	this->socket_manager = new Socket_manager();
+	this->socket_manager = new Socket_manager(this);
 }
 
 Server::~Server()
@@ -16,5 +17,9 @@ Server::~Server()
 
 void Server::run()
 {
-	cout << "running" << endl;	
+	while(1)
+	{
+		cout << "server running..." << endl;
+		usleep(3000000);
+	}
 }

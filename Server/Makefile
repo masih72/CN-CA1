@@ -1,5 +1,8 @@
-server: main.cpp server.o
-	g++ main.cpp server.o -o server
+server: main.cpp server.o socket_manager.o
+	g++ -std=c++0x main.cpp server.o socket_manager.o -lpthread -o server
 
 server.o: server.cpp server.h
-	g++ -c server.cpp
+	g++ -std=c++0x -c server.cpp
+	
+socket_manager.o: socket_manager.cpp socket_manager.h
+	g++ -std=c++0x -c socket_manager.cpp
