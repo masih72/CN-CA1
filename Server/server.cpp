@@ -20,6 +20,6 @@ void Server::run()
 	while(1)
 	{
 		cout << "server running..." << endl;
-		usleep(3000000);
+		usleep(300000000);
 	}
 }

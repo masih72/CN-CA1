@@ -53,9 +53,10 @@ void Socket_manager::accept_connection(Socket_manager* socket_manager)
 {
 	struct sockaddr_in cli_addr;
 	socklen_t clilen = sizeof(cli_addr);
-
+	//cout<<"chert"<<endl ;
 	while(1)
 	{
+		//cout<<"chert"<<endl ;
 		int cli_sock = accept(socket_manager->get_accept_sockfd(), (struct sockaddr*) &cli_addr, &clilen);
 		if (cli_sock < 0)
 		{
