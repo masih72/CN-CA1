@@ -2,8 +2,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <thread>
-//#include <sys/types.h>
-//#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include "socket_manager.h"
 
@@ -36,8 +36,6 @@ Socket_manager::Socket_manager(Server* srv)
 	listen(sockfd, 1024);
 
 	this->accept_thread = new thread(Socket_manager::accept_connection, this);
-	//while(1)
-	//	cout << "waiting in init" << endl;
 }
 
 
@@ -53,10 +51,8 @@ void Socket_manager::accept_connection(Socket_manager* socket_manager)
 {
 	struct sockaddr_in cli_addr;
 	socklen_t clilen = sizeof(cli_addr);
-	//cout<<"chert"<<endl ;
 	while(1)
 	{
-		//cout<<"chert"<<endl ;
 		int cli_sock = accept(socket_manager->get_accept_sockfd(), (struct sockaddr*) &cli_addr, &clilen);
 		if (cli_sock < 0)
 		{
@@ -72,5 +68,16 @@ void Socket_manager::accept_connection(Socket_manager* socket_manager)
 
 void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 {
-	cout << "new client has connected!" << endl;
+	char buffer[PACKET_SIZE];
+
+	while(1)
+	{
+		bzero(buffer, sizeof(buffer));
+
+		cout << "waiting on a packet..." << endl;
+		while( read(cli_sock, buffer, sizeof(buffer)-1) < 0);
+
+		cout << "decoding packet..." << endl;
+		socket_manager->get_server()->get_packet_manager()->decode(buffer);
+	}
 }

@@ -1,8 +1,10 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+class Packet_manager;
 class Socket_manager;
 
+#include "packet_manager.h"
 #include "socket_manager.h"
 
 class Client
@@ -19,6 +21,7 @@ public:
 private:
 	char* ip_addr;
 	int port_num;
+	Packet_manager* packet_manager;
 	Socket_manager* socket_manager;
 };
 

@@ -19,6 +19,7 @@ public:
 	static void receive(Socket_manager* socket_manager, int cli_sock);
 
 	int get_accept_sockfd() { return accept_sockfd; }
+	Server* get_server() { return server; }
 
 	void set_accept_sockfd(int sockfd) { this->accept_sockfd = sockfd; }
 

@@ -1,13 +1,11 @@
 #include <iostream>
-//#include <sys/types.h>
-//#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include "socket_manager.h"
-
+#include <cstring>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
+#include "socket_manager.h"
 
 using namespace std;
 
@@ -31,18 +29,23 @@ Socket_manager::Socket_manager(Client* cli)
 	bcopy((char*)server->h_addr, (char*)&srv_addr.sin_addr.s_addr, server->h_length);
 	srv_addr.sin_port = htons(cli->get_port_num());
 
-	//cout<<connect(sockfd, (struct sockaddr*) &srv_addr, sizeof(srv_addr)) ;
 	if (connect(sockfd, (struct sockaddr*) &srv_addr, sizeof(srv_addr)) < 0)
 	{
 		cerr << "error connecting!" << endl;
-		//exit(0);
+		exit(0);
 	}
 
-	while(1);
+	this->server_fd = sockfd;
 }
 
 
 Socket_manager::~Socket_manager()
 {
 
+}
+
+
+void Socket_manager::send(char* buffer)
+{
+	//TODO send the given buffer to server
 }

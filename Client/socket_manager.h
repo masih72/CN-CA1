@@ -11,7 +11,10 @@ public:
 	Socket_manager(Client* cli);
 	virtual ~Socket_manager();
 
+	void send(char* buffer);
+
 private:
+	int server_fd;
 	Client* client;
 };
 
