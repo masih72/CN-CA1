@@ -28,7 +28,7 @@ void Client::run()
 		cout << ">>> ";
 
 		string command;
-		cin >> command;
+		getline(cin, command) ;
 
 		char buffer[PACKET_SIZE];
 		bzero(buffer, sizeof(buffer));

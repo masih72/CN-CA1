@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <unistd.h>
 #include <thread>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -75,7 +76,7 @@ void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 		bzero(buffer, sizeof(buffer));
 
 		cout << "waiting on a packet..." << endl;
-		while( read(cli_sock, buffer, sizeof(buffer)-1) < 0);
+		while( read(cli_sock, buffer, 512) < 0); 
 
 		cout << "decoding packet..." << endl;
 		socket_manager->get_server()->get_packet_manager()->decode(buffer);

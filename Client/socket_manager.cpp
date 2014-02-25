@@ -2,6 +2,7 @@
 #include <cstring>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <unistd.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -16,7 +17,7 @@ Socket_manager::Socket_manager(Client* cli)
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0)
 	{
-		cerr << "error opening socket!" << endl;
+		cerr << "error opening socket!" << endl; 
 		exit(0);
 	}
 
@@ -47,5 +48,6 @@ Socket_manager::~Socket_manager()
 
 void Socket_manager::send(char* buffer)
 {
-	//TODO send the given buffer to server
+	while ( write ( this->server_fd, buffer, 512) < 0)
+		continue ;
 }

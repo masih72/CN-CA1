@@ -4,6 +4,7 @@
 class Packet_manager;
 class Socket_manager;
 
+#include <string>
 #include "packet_manager.h"
 #include "socket_manager.h"
 
@@ -16,7 +17,9 @@ public:
 	void run();
 
 	int get_port_num() { return port_num; }
+	void register_users (string username, string password, string email) ;
 	Packet_manager* get_packet_manager() { return packet_manager; }
+
 
 private:
 	int port_num;

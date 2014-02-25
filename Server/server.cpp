@@ -25,3 +25,8 @@ void Server::run()
 		usleep(3000000);
 	}
 }
+
+void Server::register_users (string username, string password, string email) 
+{
+
+}
