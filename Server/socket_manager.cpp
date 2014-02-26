@@ -80,5 +80,9 @@ void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 
 		cout << "decoding packet..." << endl;
 		socket_manager->get_server()->get_packet_manager()->decode(buffer);
+		//cout<<buffer<<endl ;
+		while( write(cli_sock, buffer, 512) < 0)
+			continue ;
+
 	}
 }

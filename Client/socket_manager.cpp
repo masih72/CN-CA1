@@ -50,4 +50,7 @@ void Socket_manager::send(char* buffer)
 {
 	while ( write ( this->server_fd, buffer, 512) < 0)
 		continue ;
+	while ( read ( this->server_fd, buffer, 512) < 0)
+	;
+		cout<<buffer<<endl ;
 }

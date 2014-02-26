@@ -5,6 +5,8 @@ class Server;
 
 #include "server.h"
 
+using namespace std ;
+
 #define PACKET_SIZE 512
 
 class Packet_manager

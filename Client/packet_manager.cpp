@@ -28,16 +28,33 @@ void prepare_register_pack(char* buffer, stringstream& ss)
 	ss >> email ;
 	int index = 4 ;
 
-	strncpy (&buffer[index], username.c_str(), sizeof(buffer)) ;
+	strncpy (&buffer[index], username.c_str(), 512) ;
 	index += username.length() + 1 ;
 	buffer[index-1] = ' ' ;
-	strncpy (&buffer[index], password.c_str(), sizeof(buffer)) ;
+	strncpy (&buffer[index], password.c_str(), 512) ;
 	index += password.length() + 1  ;
 	buffer[index-1] = ' ' ;
-	strncpy (&buffer[index], email.c_str(), sizeof(buffer)) ;
-	cout<<buffer<<endl ;
+	strncpy (&buffer[index], email.c_str(), 512) ;
+	//cout<<buffer<<endl ;
 }
 
+void prepare_login_pack(char* buffer, stringstream& ss)
+{
+	buffer[0] = '0' ;
+	buffer[1] = '1' ;
+	buffer[2] = '0' ;
+	buffer[3] = ' ' ;
+	string username, password ;
+	ss >> username ;
+	ss >> password ;
+	int index = 4 ;
+
+	strncpy (&buffer[index], username.c_str(), 512) ;
+	index += username.length() + 1 ;
+	buffer[index-1] = ' ' ;
+	strncpy (&buffer[index], password.c_str(), 512) ;
+	cout<<buffer<<endl ;
+}
 
 void Packet_manager::encode(char* buffer, string command)
 {
@@ -50,15 +67,15 @@ void Packet_manager::encode(char* buffer, string command)
 	{
 		prepare_register_pack(buffer, ss) ;
 
-}
-else if ( token == "Login")
-{
+	}
+	else if ( token == "Login")
+	{
+		prepare_login_pack(buffer, ss) ;
+	}
+	else if ( token == "ChangeStatus")
+	{
 
-}
-else if ( token == "ChangeStatus")
-{
-
-}
+	}
 
 	
 }
