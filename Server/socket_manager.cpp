@@ -55,6 +55,7 @@ void Socket_manager::accept_connection(Socket_manager* socket_manager)
 	while(1)
 	{
 		int cli_sock = accept(socket_manager->get_accept_sockfd(), (struct sockaddr*) &cli_addr, &clilen);
+		//cout<<cli_sock<<endl ;
 		if (cli_sock < 0)
 		{
 			cerr << "error accepting!" << endl;
@@ -70,7 +71,8 @@ void Socket_manager::accept_connection(Socket_manager* socket_manager)
 void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 {
 	char buffer[PACKET_SIZE];
-
+	//socket_manager->current_cli_fd = cli_sock ;
+	//cout<<"client socket : "<<cli_sock<< endl ;
 	while(1)
 	{
 		bzero(buffer, sizeof(buffer));
@@ -79,7 +81,7 @@ void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 		while( read(cli_sock, buffer, 512) < 0); 
 
 		cout << "decoding packet..." << endl;
-		socket_manager->get_server()->get_packet_manager()->decode(buffer);
+		socket_manager->get_server()->get_packet_manager()->decode(buffer,cli_sock);
 		//cout<<buffer<<endl ;
 		while( write(cli_sock, buffer, 512) < 0)
 			continue ;

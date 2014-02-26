@@ -22,8 +22,10 @@ public:
 	Server* get_server() { return server; }
 
 	void set_accept_sockfd(int sockfd) { this->accept_sockfd = sockfd; }
+	int current_cli_fd ;
 
 private:
+
 	int accept_sockfd;
 	thread* accept_thread;
 	vector<thread*> receiver_threads;

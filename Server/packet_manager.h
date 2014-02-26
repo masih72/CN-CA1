@@ -15,7 +15,7 @@ public:
 	Packet_manager(Server* srv);
 	virtual ~Packet_manager();
 
-	void decode(char* buffer);
+	void decode(char* buffer, int cli_sock);
 
 private:
 	Server* server;
