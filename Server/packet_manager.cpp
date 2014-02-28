@@ -215,11 +215,12 @@ void Packet_manager::decode(char* buffer, int cli_sock)
 	{
 		string username_email;
 		ss >> username_email;
-		is_valid = server->who(username_email, cli_sock);
+		is_valid = server->who(buffer,username_email, cli_sock);
 		if (is_valid == 0)
 		{
+
 			message = "It's OK.";
-			strncpy(buffer, message.c_str(), PACKET_SIZE);
+
 		}
 		else if (is_valid == 1)
 		{
@@ -227,8 +228,11 @@ void Packet_manager::decode(char* buffer, int cli_sock)
 			strncpy(buffer, message.c_str(), PACKET_SIZE);
 		}
 	}
+	else
+	{
+			message = "Command Not Found.";
+			strncpy(buffer, message.c_str(), PACKET_SIZE);
+	}
 
 
-	//string temp(buffer);
-	//cout << temp << endl;
 }

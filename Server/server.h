@@ -32,7 +32,7 @@ public:
 	int select(string username, int cli_sock);
 	int send_msg(string msg, int cli_sock);
 	int exit_client(int cli_sock);
-	int who (string username_email, int cli_sock);
+	int who (char* buffer, string username_email, int cli_sock);
 	User* find_username (string name) ;
 	User* find_fd (int sockfd) ;
 	bool check_user_pass (string name, string pass) ;

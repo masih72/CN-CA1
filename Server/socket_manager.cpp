@@ -79,8 +79,7 @@ void Socket_manager::send(char* buffer, int cli_fd)
 void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 {
 	char buffer[PACKET_SIZE];
-	//socket_manager->current_cli_fd = cli_sock ;
-	//cout<<"client socket : "<<cli_sock<< endl ;
+
 	while(1)
 	{
 		bzero(buffer, sizeof(buffer));
@@ -100,7 +99,7 @@ void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 			break;
 		}
 
-		//cout<<buffer<<endl ;
+		cout<<buffer<<endl ;
 		while( write(cli_sock, buffer, PACKET_SIZE) < 0)
 			continue ;
 

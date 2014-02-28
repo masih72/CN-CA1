@@ -52,9 +52,7 @@ void Socket_manager::send(char* buffer)
 {
 	while ( write ( this->server_fd, buffer, PACKET_SIZE) < 0)
 		continue ;
-	//while ( read ( this->server_fd, buffer, PACKET_SIZE) < 0)
-	//;
-	//	cout<<buffer<<endl ;
+
 }
 
 
@@ -66,7 +64,8 @@ void Socket_manager::receive(Socket_manager* socket_manager)
 	{
 		while( read(socket_manager->server_fd, buffer, PACKET_SIZE) < 0)
 			continue;
-
 		cout << buffer << endl;
+		cout<< "Please Enter Your Command : "<<endl ;
+
 	}
 }

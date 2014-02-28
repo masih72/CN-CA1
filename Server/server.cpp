@@ -99,7 +99,7 @@ int Server::register_user (string username, string password, string email, int c
 	else
 	{
 		User* user = new User(username, password,email,cli_sock) ;
-		cout<<user->get_client_fd()<<endl  ;
+		//cout<<user->get_client_fd()<<endl  ;
 		this->users.push_back(user) ;
 		//test() ;
 		return 0 ;
@@ -147,7 +147,7 @@ int Server::invitation (string username, int cli_sock)
 	{
 		return 1;
 	}
-	else if ( (find_fd(cli_sock)->status == "offline") )
+	else if ( (find_username(username)->status == "offline") )
 	{
 		return 3 ;
 	}
@@ -239,15 +239,16 @@ int Server::select(string username, int cli_sock)
 
 int Server::send_msg(string msg, int cli_sock)
 {
+
 	char buffer[PACKET_SIZE];
-	string message = find_fd(cli_sock)->get_username() + ": " + msg;
+	string message = find_fd(cli_sock)->get_username() + ":" + msg;
 	strncpy(buffer, message.c_str(), PACKET_SIZE);
 
 	string des_status = find_username(find_fd(cli_sock)->get_selected_friend())->get_status();
 	if (des_status == "busy" || des_status == "offline")
 		return 1;
-
-	this->socket_manager->send(buffer, find_username(find_fd(cli_sock)->get_selected_friend())->get_client_fd());
+	if (find_username(find_fd(cli_sock)->get_selected_friend())->get_username() != find_fd(cli_sock)->get_username() )
+		this->socket_manager->send(buffer, find_username(find_fd(cli_sock)->get_selected_friend())->get_client_fd());
 
 	return 0 ;
 }
@@ -264,14 +265,15 @@ int Server::exit_client(int cli_sock)
 }
 
 
-int Server::who(string username_email, int cli_sock)
+int Server::who(char* buffer, string username_email, int cli_sock)
 {
-	char buffer[PACKET_SIZE];
+
 	int index = 0;
 	bool found = false;
+
 	for (int i=0 ; i<users.size() ; ++i)
 	{
-		if (users[i]->is_login == false || users[i]->get_status() == "offline")
+		if (users[i]->is_login == false || users[i]->get_status() == "offline" || users[i]->get_username() == find_fd(cli_sock)->get_username())
 			continue;
 
 		char* ret1;
@@ -282,8 +284,8 @@ int Server::who(string username_email, int cli_sock)
 		if (ret1 || ret2)
 		{
 			found = true;
-			strncpy(&buffer[index], users[i]->get_username().c_str(), PACKET_SIZE);
-			index += users[i]->get_username().length();
+			strncpy(&buffer[index],  (" "+users[i]->get_username() ).c_str() , PACKET_SIZE);
+			index += users[i]->get_username().length() + 1;
 			buffer[index] = '\n';
 			index += 1;
 		}
@@ -294,7 +296,8 @@ int Server::who(string username_email, int cli_sock)
 	}
 	else
 	{
-		this->socket_manager->send(buffer, cli_sock);
+		buffer[index-1] = '\b' ;
+		return 0 ;
 	}
 }
 
@@ -308,7 +311,7 @@ void Server::test()
 	}*/
 	for (int i = 0 ; i < users.size() ; i++)
 	{
-		cout<<users[i]->username<<"'s invitations is from : " ;
+		cout<<users[i]->username<<"'s Invitations is from : " ;
 		for (int j = 0 ; j < users[i]->invitations.size(); j++)
 			cout<<users[i]->invitations[j]<<" , " ;
 		cout<<endl ;
