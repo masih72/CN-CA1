@@ -16,7 +16,7 @@ User::User (string username, string password, string email, int client_fd)
 	this->is_login = false ;
 	this->status = "offline" ;
 	this->client_fd = client_fd ;
-	this->selected_friend = username;
+	this->selected_friend = "";
 }
 
 

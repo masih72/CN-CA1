@@ -244,6 +244,9 @@ int Server::send_msg(string msg, int cli_sock)
 	string message = find_fd(cli_sock)->get_username() + ":" + msg;
 	strncpy(buffer, message.c_str(), PACKET_SIZE);
 
+	if (find_fd(cli_sock)->get_selected_friend() == "")
+		return 1;
+
 	string des_status = find_username(find_fd(cli_sock)->get_selected_friend())->get_status();
 	if (des_status == "busy" || des_status == "offline")
 		return 1;
