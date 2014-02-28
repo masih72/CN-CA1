@@ -37,7 +37,7 @@ void prepare_register_pack(char* buffer, stringstream& ss)
 	index += password.length() + 1  ;
 	buffer[index-1] = ' ' ;
 	strncpy (&buffer[index], email.c_str(), PACKET_SIZE - index) ;
-	cout<<buffer<<endl ;
+	//cout<<buffer<<endl ;
 }
 
 void prepare_login_pack(char* buffer, stringstream& ss)
@@ -56,7 +56,7 @@ void prepare_login_pack(char* buffer, stringstream& ss)
 	index += username.length() + 1 ;
 	buffer[index-1] = ' ' ;
 	strncpy (&buffer[index], password.c_str(), PACKET_SIZE - index) ;
-	cout<<buffer<<endl ;
+	//cout<<buffer<<endl ;
 }
 
 
@@ -71,7 +71,7 @@ void prepare_ChangeStatus_pack(char* buffer, stringstream& ss)
 	ss >> status ;
 	int index = 5 ;
 	strncpy (&buffer[index], status.c_str(), PACKET_SIZE - index) ;
-	cout<<buffer<<endl ;
+	//cout<<buffer<<endl ;
 }
 
 void prepare_invite_pack(char* buffer, stringstream& ss) 
@@ -85,7 +85,7 @@ void prepare_invite_pack(char* buffer, stringstream& ss)
 	ss >> username ;
 	int index = 5 ;
 	strncpy (&buffer[index], username.c_str(), PACKET_SIZE - index) ;
-	cout<<buffer<<endl ;
+	//cout<<buffer<<endl ;
 }
 
 void prepare_accept_pack(char* buffer, stringstream& ss)
@@ -99,7 +99,7 @@ void prepare_accept_pack(char* buffer, stringstream& ss)
 	ss >> username;
 	int index = 5;
 	strncpy(&buffer[index], username.c_str(), PACKET_SIZE - index);
-	cout << buffer << endl;
+	//cout << buffer << endl;
 }
 
 void prepare_deny_pack(char* buffer, stringstream& ss)
@@ -113,7 +113,7 @@ void prepare_deny_pack(char* buffer, stringstream& ss)
 	ss >> username;
 	int index = 5;
 	strncpy(&buffer[index], username.c_str(), PACKET_SIZE - index);
-	cout << buffer << endl;
+	//cout << buffer << endl;
 }
 
 void prepare_select_pack(char* buffer, stringstream& ss)
@@ -127,7 +127,7 @@ void prepare_select_pack(char* buffer, stringstream& ss)
 	ss >> username;
 	int index = 5;
 	strncpy(&buffer[index], username.c_str(), PACKET_SIZE - index);
-	cout << buffer << endl;
+	//cout << buffer << endl;
 }
 
 void prepare_send_pack(char* buffer, stringstream& ss)
@@ -141,7 +141,7 @@ void prepare_send_pack(char* buffer, stringstream& ss)
 	getline(ss, message);
 	int index = 5;
 	strncpy(&buffer[index], message.c_str(), PACKET_SIZE - index);
-	cout << buffer << endl;
+	//cout << buffer << endl;
 }
 
 void prepare_exit_pack(char* buffer, stringstream& ss)
@@ -151,7 +151,7 @@ void prepare_exit_pack(char* buffer, stringstream& ss)
 	buffer[2] = '0';
 	buffer[3] = '1';
 	buffer[4] = ' ';
-	cout << buffer << endl;
+	//cout << buffer << endl;
 }
 
 void prepare_who_pack(char* buffer, stringstream& ss)
@@ -165,7 +165,7 @@ void prepare_who_pack(char* buffer, stringstream& ss)
 	ss >> username_email;
 	int index = 5;
 	strncpy(&buffer[index], username_email.c_str(), PACKET_SIZE - index);
-	cout << buffer << endl;
+	//cout << buffer << endl;
 }
 
 void Packet_manager::encode(char* buffer, string command)
