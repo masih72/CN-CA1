@@ -16,6 +16,7 @@ public:
 	virtual ~Socket_manager();
 
 	static void accept_connection(Socket_manager* socket_manager);
+	void send(char* buffer, int cli_fd);
 	static void receive(Socket_manager* socket_manager, int cli_sock);
 
 	int get_accept_sockfd() { return accept_sockfd; }

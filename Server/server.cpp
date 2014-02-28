@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <unistd.h>
 #include <vector>
 #include "server.h"
@@ -19,6 +20,8 @@ Server::~Server()
 {
 	delete this->packet_manager;
 	delete this->socket_manager;
+	for (int i=0 ; i<users.size() ; ++i)
+		delete users[i];
 }
 
 void Server::run()
@@ -26,7 +29,7 @@ void Server::run()
 	cout << "server running..." << endl;
 	while(1)
 	{
-		//usleep(300000000);
+		usleep(300000000);
 	}
 }
 
@@ -43,20 +46,15 @@ bool is_login(string name)
 	return false ;
 }
 
-bool Server::check_user_pass (string name, string pass, int cli_sock)
+bool Server::check_user_pass (string name, string pass)
 {
-	//for (int i = 0 ; i < users.size() ; i++ )
-	//{
-		if (find_fd(cli_sock)->get_username() == name )
-		{
-			if (find_fd(cli_sock)->get_password() == pass)
-			{
-				return true ;
-			}
-		}
-	//}
+	for (int i=0 ; i<users.size() ; ++i)
+	{
+		if (users[i]->get_username() == name && users[i]->get_password() == pass)
+			return true;
+	}
 				
-	return false ;	
+	return false;
 }
 
 User* Server::find_username (string name)
@@ -78,13 +76,15 @@ User* Server::find_fd (int sockfd)
 
 int Server::login_user (string username, string password, int cli_sock)
 {
-	if ( !check_user_pass(username, password, cli_sock) )
+	if ( !check_user_pass(username, password) )
 	{
 		return 1 ;
 	}
 	else
 	{
 		find_username(username)->is_login = true ;
+		find_username(username)->client_fd = cli_sock;
+		find_username(username)->status = "available";
 		return 0 ;
 	}
 
@@ -126,7 +126,7 @@ int Server::change_status (string status, int cli_sock)
 	else
 	{
 		find_fd(cli_sock)->status = status ;
-		find_fd(cli_sock)->is_login = false ;
+		//find_fd(cli_sock)->is_login = false ;
 		return 0 ;
 	}
 }
@@ -143,9 +143,13 @@ bool Server::is_friend (string name, int cli_sock)
 
 int Server::invitation (string username, int cli_sock)
 {
-	if ( (find_fd(cli_sock)->status == "offline") )
+	if ( find_fd(cli_sock)->is_login == false)
 	{
-		return 1 ;
+		return 1;
+	}
+	else if ( (find_fd(cli_sock)->status == "offline") )
+	{
+		return 3 ;
 	}
 	else if (is_friend(username, cli_sock))
 	{
@@ -158,8 +162,139 @@ int Server::invitation (string username, int cli_sock)
 		find_username(username)->invitations.push_back(find_fd(cli_sock)->username) ;
 		//cout<<find_username(username)->invitations[0]->username<<endl ;
 		//cout<<find_fd(cli_sock)->invitations[0]->username<<endl ;
-		test() ;
+		//test() ;
+		char buffer[PACKET_SIZE];
+		string message = "invitation from: " + find_fd(cli_sock)->username;
+		strncpy(buffer, message.c_str(), PACKET_SIZE);
+
+		this->socket_manager->send(buffer, find_username(username)->client_fd);
+
 		return 0 ;
+	}
+}
+
+
+int Server::accept(string username, int cli_sock)
+{
+	if ( find_fd(cli_sock)->is_login == false)
+	{
+		return 1;
+	}
+	else if ( (find_fd(cli_sock)->status == "offline") )
+	{
+		return 2;
+	}
+	else
+	{
+		find_fd(cli_sock)->friends.push_back(username);
+		find_username(username)->friends.push_back(find_fd(cli_sock)->get_username());
+
+		return 0;
+	}
+}
+
+
+int Server::deny(string username, int cli_sock)
+{
+	if ( find_fd(cli_sock)->is_login == false)
+	{
+		return 1;
+	}
+	else if ( (find_fd(cli_sock)->status == "offline") )
+	{
+		return 2;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+int Server::select(string username, int cli_sock)
+{
+	if ( find_fd(cli_sock)->is_login == false)
+	{
+		return 1;
+	}
+	else if ( (find_fd(cli_sock)->status == "offline") )
+	{
+		return 2;
+	}
+	else if (!find_fd(cli_sock)->has_friend(username))
+	{
+		return 3;
+	}
+	else if (find_username(username)->status != "available")
+	{
+		return 4;
+	}
+	else
+	{
+		find_fd(cli_sock)->set_selected_friend(username);
+		return 0;
+	}
+}
+
+
+int Server::send_msg(string msg, int cli_sock)
+{
+	char buffer[PACKET_SIZE];
+	string message = find_fd(cli_sock)->get_username() + ": " + msg;
+	strncpy(buffer, message.c_str(), PACKET_SIZE);
+
+	string des_status = find_username(find_fd(cli_sock)->get_selected_friend())->get_status();
+	if (des_status == "busy" || des_status == "offline")
+		return 1;
+
+	this->socket_manager->send(buffer, find_username(find_fd(cli_sock)->get_selected_friend())->get_client_fd());
+
+	return 0 ;
+}
+
+
+int Server::exit_client(int cli_sock)
+{
+	User* client = find_fd(cli_sock);
+	if (client != NULL)
+	{
+		client->status = "offline";
+		client->is_login = false;
+	}
+}
+
+
+int Server::who(string username_email, int cli_sock)
+{
+	char buffer[PACKET_SIZE];
+	int index = 0;
+	bool found = false;
+	for (int i=0 ; i<users.size() ; ++i)
+	{
+		if (users[i]->is_login == false || users[i]->get_status() == "offline")
+			continue;
+
+		char* ret1;
+		char* ret2;
+		const char* un = username_email.c_str();
+		ret1 = strstr((char*)((users[i]->get_username()).c_str()), un);
+		ret2 = strstr((char*)((users[i]->get_email()).c_str()), un);
+		if (ret1 || ret2)
+		{
+			found = true;
+			strncpy(&buffer[index], users[i]->get_username().c_str(), PACKET_SIZE);
+			index += users[i]->get_username().length();
+			buffer[index] = '\n';
+			index += 1;
+		}
+	}
+	if (!found)
+	{
+		return 1;
+	}
+	else
+	{
+		this->socket_manager->send(buffer, cli_sock);
 	}
 }
 

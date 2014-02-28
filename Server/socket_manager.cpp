@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
+#include <sstream>
 #include <unistd.h>
 #include <thread>
 #include <sys/types.h>
@@ -68,6 +69,13 @@ void Socket_manager::accept_connection(Socket_manager* socket_manager)
 }
 
 
+void Socket_manager::send(char* buffer, int cli_fd)
+{
+	while ( write ( cli_fd, buffer, PACKET_SIZE) < 0)
+			continue ;
+}
+
+
 void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 {
 	char buffer[PACKET_SIZE];
@@ -78,12 +86,22 @@ void Socket_manager::receive(Socket_manager* socket_manager, int cli_sock)
 		bzero(buffer, sizeof(buffer));
 
 		cout << "waiting on a packet..." << endl;
-		while( read(cli_sock, buffer, 512) < 0); 
+		while( read(cli_sock, buffer, PACKET_SIZE) < 0);
 
 		cout << "decoding packet..." << endl;
 		socket_manager->get_server()->get_packet_manager()->decode(buffer,cli_sock);
+
+		stringstream ss;
+		ss << buffer;
+		string token;
+		ss >> token;
+		if (token == "1001")
+		{
+			break;
+		}
+
 		//cout<<buffer<<endl ;
-		while( write(cli_sock, buffer, 512) < 0)
+		while( write(cli_sock, buffer, PACKET_SIZE) < 0)
 			continue ;
 
 	}

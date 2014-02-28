@@ -16,4 +16,15 @@ User::User (string username, string password, string email, int client_fd)
 	this->is_login = false ;
 	this->status = "offline" ;
 	this->client_fd = client_fd ;
+	this->selected_friend = username;
+}
+
+
+bool User::has_friend(string username)
+{
+	for (int i=0 ; i<friends.size() ; ++i)
+		if (friends[i] == username)
+			return true;
+
+	return false;
 }

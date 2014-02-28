@@ -27,6 +27,11 @@ public:
 	string get_status() { return status ; }
 	bool get_is_login() { return is_login ; }
 	int get_client_fd() { return client_fd ; }
+	string get_selected_friend() { return selected_friend; }
+
+	void set_selected_friend(string un) { selected_friend = un; }
+
+	bool has_friend(string username);
 
 	friend class Server ;
 
@@ -37,6 +42,7 @@ private:
 	string password ;
 	string email ;
 	string status ;
+	string selected_friend;
 };
 
 #endif

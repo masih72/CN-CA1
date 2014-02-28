@@ -37,20 +37,36 @@ Socket_manager::Socket_manager(Client* cli)
 	}
 
 	this->server_fd = sockfd;
+
+	receiver = new thread(Socket_manager::receive, this);
 }
 
 
 Socket_manager::~Socket_manager()
 {
-
+	delete receiver;
 }
 
 
 void Socket_manager::send(char* buffer)
 {
-	while ( write ( this->server_fd, buffer, 512) < 0)
+	while ( write ( this->server_fd, buffer, PACKET_SIZE) < 0)
 		continue ;
-	while ( read ( this->server_fd, buffer, 512) < 0)
-	;
-		cout<<buffer<<endl ;
+	//while ( read ( this->server_fd, buffer, PACKET_SIZE) < 0)
+	//;
+	//	cout<<buffer<<endl ;
+}
+
+
+void Socket_manager::receive(Socket_manager* socket_manager)
+{
+	char buffer[PACKET_SIZE];
+
+	while(1)
+	{
+		while( read(socket_manager->server_fd, buffer, PACKET_SIZE) < 0)
+			continue;
+
+		cout << buffer << endl;
+	}
 }

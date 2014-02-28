@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <sstream>
 #include "packet_manager.h"
 
@@ -36,12 +37,12 @@ void Packet_manager::decode(char* buffer, int cli_sock)
 		if (is_valid == 0)
 		{
 			message = "It's OK." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 		else
 		{
 			message = "Duplicate Username or Email." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 	}
 
@@ -55,12 +56,12 @@ void Packet_manager::decode(char* buffer, int cli_sock)
 		if (is_valid == 0)
 		{
 			message = "It's OK." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 		else
 		{
 			message = "Wrong Username or Password." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 	}
 
@@ -73,12 +74,12 @@ void Packet_manager::decode(char* buffer, int cli_sock)
 		if (is_valid == 0)
 		{
 			message = "It's OK." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 		else
 		{
 			message = "Wrong Status." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 
 	}	
@@ -92,20 +93,140 @@ void Packet_manager::decode(char* buffer, int cli_sock)
 		if (is_valid == 0)
 		{
 			message = "It's OK." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 		else if (is_valid == 1)
 		{
 			message = "Not Connected." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
 		}
 		else if (is_valid == 2)
 		{
 			message = username+" Is Your Friend Already." ;
-			strncpy (buffer, message.c_str(), 512) ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
+		}
+		else if (is_valid == 3)
+		{
+			message = "Wrong Status.";
+			strncpy (buffer, message.c_str(), PACKET_SIZE);
 		}
 		
 	}	
+
+	else if (code == "0101")
+	{
+		string username;
+		ss >> username;
+		is_valid = server->accept(username, cli_sock);
+		if (is_valid == 0)
+		{
+			message = "It's OK." ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
+		}
+		else if (is_valid == 1)
+		{
+			message = "Not Connected." ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
+		}
+		else if (is_valid == 2)
+		{
+			message = "Wrong Status.";
+			strncpy (buffer, message.c_str(), PACKET_SIZE);
+		}
+	}
+
+	else if (code == "0110")
+	{
+		string username;
+		ss >> username;
+		is_valid = server->deny(username, cli_sock);
+		if (is_valid == 0)
+		{
+			message = "It's OK." ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
+		}
+		else if (is_valid == 1)
+		{
+			message = "Not Connected." ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
+		}
+		else if (is_valid == 2)
+		{
+			message = "Wrong Status.";
+			strncpy (buffer, message.c_str(), PACKET_SIZE);
+		}
+	}
+
+	else if (code == "0111")
+	{
+		string username;
+		ss >> username;
+		is_valid = server->select(username, cli_sock);
+		if (is_valid == 0)
+		{
+			message = "It's OK." ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
+		}
+		else if (is_valid == 1)
+		{
+			message = "Not Connected." ;
+			strncpy (buffer, message.c_str(), PACKET_SIZE) ;
+		}
+		else if (is_valid == 2)
+		{
+			message = "Wrong Status.";
+			strncpy (buffer, message.c_str(), PACKET_SIZE);
+		}
+		else if (is_valid == 3)
+		{
+			message = "Not Your Friend.";
+			strncpy (buffer, message.c_str(), PACKET_SIZE);
+		}
+		else if (is_valid == 4)
+		{
+			message = "Friend Not Available.";
+			strncpy(buffer, message.c_str(), PACKET_SIZE);
+		}
+	}
+
+	else if (code == "1000")
+	{
+		string msg;
+		getline(ss, msg);
+		is_valid = server->send_msg(msg, cli_sock);
+		if (is_valid == 0)
+		{
+			message = "It's OK.";
+			strncpy(buffer, message.c_str(), PACKET_SIZE);
+		}
+		else if (is_valid == 1)
+		{
+			message = "Not Sent.";
+			strncpy(buffer, message.c_str(), PACKET_SIZE);
+		}
+	}
+
+	else if (code == "1001")
+	{
+		server->exit_client(cli_sock);
+	}
+
+	else if (code == "1010")
+	{
+		string username_email;
+		ss >> username_email;
+		is_valid = server->who(username_email, cli_sock);
+		if (is_valid == 0)
+		{
+			message = "It's OK.";
+			strncpy(buffer, message.c_str(), PACKET_SIZE);
+		}
+		else if (is_valid == 1)
+		{
+			message = "Not Found.";
+			strncpy(buffer, message.c_str(), PACKET_SIZE);
+		}
+	}
 
 
 	//string temp(buffer);

@@ -27,9 +27,15 @@ public:
 	int login_user (string username, string password, int cli_sock) ;
 	int change_status (string status, int cli_sock) ;
 	int invitation (string username, int cli_sock) ;
+	int accept(string username, int cli_sock);
+	int deny(string username, int cli_sock);
+	int select(string username, int cli_sock);
+	int send_msg(string msg, int cli_sock);
+	int exit_client(int cli_sock);
+	int who (string username_email, int cli_sock);
 	User* find_username (string name) ;
 	User* find_fd (int sockfd) ;
-	bool check_user_pass (string name, string pass, int cli_sock) ;
+	bool check_user_pass (string name, string pass) ;
 	bool is_registered(string name) ;
 	bool is_friend (string name, int cli_sock) ;
 

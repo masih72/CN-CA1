@@ -25,7 +25,7 @@ void Client::run()
 	cout << "Welcome!" << endl << "Please enter your command:" << endl;
 	while(1)
 	{
-		cout << ">>> ";
+		//cout << ">>> ";
 
 		string command;
 		getline(cin, command) ;
@@ -35,5 +35,8 @@ void Client::run()
 		this->packet_manager->encode(buffer, command);
 
 		this->socket_manager->send(buffer);
+
+		if (command == "Exit")
+			exit(0);
 	}
 }

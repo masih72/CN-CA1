@@ -11,5 +11,6 @@ packet_manager.o: packet_manager.cpp packet_manager.h
 	
 socket_manager.o: socket_manager.cpp socket_manager.h
 	g++ -std=c++0x -c socket_manager.cpp
+	
 user.o: user.cpp user.h
 	g++ -std=c++0x -c user.cpp
